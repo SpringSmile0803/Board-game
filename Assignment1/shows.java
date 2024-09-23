@@ -1,185 +1,127 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
+import javax.swing.*;
+import java.awt.*;
 
-public class shows {
-    public static void main(String[] args) {
+class MainUI extends JFrame {
+    public MainUI() {
+        getContentPane().setBackground(new Color(233, 218, 182)); // Background
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close on exit
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Fullscreen
+
+        add(new TablePanel(), BorderLayout.WEST);
+        add(new PlayerNamePanel(), BorderLayout.CENTER);
+        add(new RightItemPanel(), BorderLayout.EAST);
         
-        JFrame jFrame = new JFrame();
-        jFrame.getContentPane().setBackground(new Color(233, 218, 182));     // Background
-        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // close and exit
-        jFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);        // FULLSCREEN
-        //jFrame.setUndecorated(true);               // no frame decorations
-        
+        setVisible(true);
+    }
+}
 
-
-
-        
-        // table 
+class TablePanel extends JPanel {
+    public TablePanel() {
         int margin = 18;
-        JPanel TablePanel = new JPanel();
-        TablePanel.setLayout(new GridLayout(10, 10));   // 10*10 table
-        TablePanel.setBorder(new EmptyBorder(margin, margin, margin, margin));
-        TablePanel.setOpaque(false);                     // Transparent background
-        
+        setLayout(new GridLayout(10, 10)); // 10x10 table
+        setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
+        setOpaque(false); // Transparent background
 
-        // make an array to save table number 
         JLabel[][] labels = new JLabel[10][10];
-
-        // default JLabel and save to array
         int counter = 1;
 
         for (int row = 0; row < 10; row++) {
-            for (int col = 0; col < 10; col++){
+            for (int col = 0; col < 10; col++) {
                 labels[row][col] = new JLabel(String.valueOf(counter), SwingConstants.CENTER);
                 labels[row][col].setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 labels[row][col].setFont(new Font("Arial", Font.BOLD, 24));
                 labels[row][col].setBackground(new Color(143, 143, 143));
                 labels[row][col].setOpaque(true);
-                TablePanel.add(labels[row][col]);
+                add(labels[row][col]);
                 counter++;
             }
         }
 
-        jFrame.add(TablePanel, BorderLayout.WEST);
+        // Set cell sizes to ensure they are square
+        int cellSize = (Math.min(Toolkit.getDefaultToolkit().getScreenSize().width, 
+                                  Toolkit.getDefaultToolkit().getScreenSize().height) - (margin * 2)) / 10;
+        for (JLabel[] row : labels) {
+            for (JLabel label : row) {
+                label.setPreferredSize(new Dimension(cellSize, cellSize));
+            }
+        }
+        revalidate();
+    }
+}
 
-
-
-
-
-
-        // create middle item; 
-        JPanel PlayerNmae = new JPanel();        
-        PlayerNmae.setLayout(new GridLayout(4, 1));   // 4*1 table
-        PlayerNmae.setOpaque(false);                   // Transparent background
-
-        // // setBorder
-        // Border emptyBorder = new EmptyBorder(margin, margin, margin, margin);
-        // Border linBorder = BorderFactory.createLineBorder(Color.BLACK);
-        // Border compoundBorder = new CompoundBorder(emptyBorder, linBorder);
-
-        PlayerNmae.setBorder(new EmptyBorder(margin, margin, margin, margin));
+class PlayerNamePanel extends JPanel {
+    public PlayerNamePanel() {
+        setLayout(new GridLayout(4, 1)); // 4x1 table
+        setOpaque(false); // Transparent background
+        setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18)); // Margin
 
         for (int i = 0; i < 4; i++) {
-            JPanel NameList = new JPanel();
-            NameList.setLayout(new GridLayout(2, 1));
-            NameList.setOpaque(false);
-            NameList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            JPanel nameList = new JPanel();
+            nameList.setLayout(new GridLayout(2, 1));
+            nameList.setOpaque(false);
+            nameList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
             JLabel text = new JLabel("Player " + i);
-            JLabel name = new JLabel("t" +i);
-
+            JLabel name = new JLabel("t" + i);
             text.setFont(new Font("Arial", Font.BOLD, 18));
             name.setFont(new Font("Arial", Font.BOLD, 18));
 
             text.setHorizontalAlignment(JLabel.CENTER);
             name.setHorizontalAlignment(JLabel.CENTER);
 
-            NameList.add(text);
-            NameList.add(name);
-
-            PlayerNmae.add(NameList);
+            nameList.add(text);
+            nameList.add(name);
+            add(nameList);
         }
+    }
+}
 
-        jFrame.add(PlayerNmae, BorderLayout.CENTER);
-
-
-
-
-
-        // create right item
-        JPanel rightitem = new JPanel(new GridBagLayout());
+class RightItemPanel extends JPanel {
+    public RightItemPanel() {
+        setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        rightitem.setPreferredSize(new Dimension(300, 0));
-        rightitem.setOpaque(false);  // Transparent background
+        setPreferredSize(new Dimension(300, 0));
+        setOpaque(false); // Transparent background
 
-        //EXIT button
-        JPanel buttonPanel = new JPanel();
-        JButton exiButton = new JButton("EXIT");
-        exiButton.setPreferredSize(new Dimension(150, 50));
-        exiButton.setFont(new Font("Arial", Font.BOLD, 18));
-        
-        exiButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-        
-        buttonPanel.add(exiButton);
+        // EXIT button
+        JButton exitButton = new JButton("EXIT");
+        exitButton.setPreferredSize(new Dimension(150, 50));
+        exitButton.setFont(new Font("Arial", Font.BOLD, 18));
+        exitButton.addActionListener(e -> System.exit(0));
 
-        // dice image
-        ImageIcon imageIcon = new ImageIcon("molecule.png");
-        JLabel imagLabel = new JLabel(imageIcon);
+        // Dice image
+        ImageIcon imageIcon = new ImageIcon("molecule.png"); // Replace with your image path
+        JLabel imageLabel = new JLabel(imageIcon);
 
-        // turn playername
-        
-        // Roll button 
-        JPanel RollbuttomJPane = new JPanel();
+        // Roll button
         JButton rollButton = new JButton("Roll");
         rollButton.setFont(new Font("Arial", Font.BOLD, 18));
+        rollButton.addActionListener(e -> {
+            // 直接寫一個function改掉
+        });
 
-        RollbuttomJPane.add(rollButton);
-
-        
-        // 1st unit for exit button
+        // Layout configuration
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weighty = 1;
         gbc.anchor = GridBagConstraints.CENTER;
-        rightitem.add(buttonPanel, gbc);
-        
-        // 2nd unit for dice image
-        gbc.gridx = 0;
+        add(createPanel(exitButton), gbc);
+
         gbc.gridy = 1;
         gbc.weighty = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        rightitem.add(imagLabel, gbc);
+        add(imageLabel, gbc);
 
-        // 3rd unit for turn playerName
-        gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.weighty = 1;
-        rightitem.add(new JLabel("Some Text"), gbc);
-        
+        add(new JLabel("Some Text"), gbc);
 
-        // 4th unit for roll button
-        gbc.gridx = 0;
         gbc.gridy = 3;
-        rightitem.add(rollButton, gbc);
+        add(rollButton, gbc);
+    }
 
-        gbc.anchor = GridBagConstraints.CENTER;
-        jFrame.add(rightitem, BorderLayout.EAST);
-
-        
-
-
-
-
-        jFrame.setVisible(true);
-
-
-        // After the frame is visible, set cell sizes to ensure they are square
-        int cellSize = (Math.min(jFrame.getWidth(), jFrame.getHeight()) - (margin * 2)) / 10; // Calculate cell size
-        for (int row = 0; row < 10; row++) {
-            for (int col = 0; col < 10; col++) {
-                labels[row][col].setPreferredSize(new java.awt.Dimension(cellSize, cellSize));
-            }
-        }
-        // Revalidate the panel to apply the changes
-        TablePanel.revalidate();
+    private JPanel createPanel(JComponent component) {
+        JPanel panel = new JPanel();
+        panel.add(component);
+        return panel;
     }
 }
