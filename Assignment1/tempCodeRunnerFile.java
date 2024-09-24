@@ -1,1 +1,0 @@
-JLabel image1 = new JLabel("Image 1");
