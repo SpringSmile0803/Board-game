@@ -64,8 +64,10 @@ class PlayerNamePanel extends JPanel {
 
 class RightItemPanel extends JPanel {
     private final int cellSize;
+    private GameController gameController;
 
-    public RightItemPanel() {
+    public RightItemPanel(GameController gameController) {
+        this.gameController = gameController;
         cellSize = 258;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -74,48 +76,93 @@ class RightItemPanel extends JPanel {
 
         // EXIT button
         JButton exitButton = new JButton("EXIT");
-        exitButton.setPreferredSize(new Dimension(150, 50));
-        exitButton.setFont(new Font("Arial", Font.BOLD, 18));
+        exitButton.setPreferredSize(new Dimension(180, 65));
         exitButton.addActionListener(e -> System.exit(0));
+        ButtonStyler.styleButton(exitButton, "Arial", Font.BOLD, 28, Color.WHITE, Color.BLACK);
 
         // Dice image
         ImageIcon imageIcon = new ImageIcon(getClass().getResource("image/one.png")); 
         Image scaledImage = imageIcon.getImage().getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH);
         JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
 
+        // trun text
+        JLabel turntext = new JLabel("NOW IS:\n");
+        turntext.setFont(new Font("Arial", Font.BOLD, 28));
+
         // Roll button
-        JButton rollButton = new JButton("Roll");
-        rollButton.setFont(new Font("Arial", Font.BOLD, 18));
-        rollButton.addActionListener(e -> {
-            // 直接寫一個function改掉
-        });
+        JButton rollButton = new JButton("ROLL");
+        rollButton.setPreferredSize(new Dimension(180, 65));
+        rollButton.addActionListener(e -> rollDice());
+        ButtonStyler.styleButton(rollButton, "Arial", Font.BOLD, 28, Color.WHITE, Color.BLACK);
+
 
         // First unit
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weighty = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        add(createPanel(exitButton), gbc);
+        gbc.anchor = GridBagConstraints.SOUTH;
+        add(exitButton, gbc);
 
         // Second unit
         gbc.gridy = 1;
         gbc.weighty = 2;
-        // gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
         add(imageLabel, gbc);
 
         // Third unit
         gbc.gridy = 2;
         gbc.weighty = 1;
-        add(new JLabel("Some Text"), gbc);
+        add(turntext, gbc);
 
         // Forth unit
         gbc.gridy = 3;
         add(rollButton, gbc);
     }
 
-    private JPanel createPanel(JComponent component) {
-        JPanel panel = new JPanel();
-        panel.add(component);
-        return panel;
+
+
+    private void rollDice() {
+        int currentPlayerIndex = gameController.getcurrentPlayerIndex();
+        PlayerSetting[] players = gameController.getplayers();
+        if (players[currentPlayerIndex].getPosition() < 100) {
+            int roolnumber = (int)(Math.random() * 6) + 1;
+            players[currentPlayerIndex].setPosition(roolnumber);
+            players[currentPlayerIndex].check();
+
+            JOptionPane.showMessageDialog(null, "Player " + (currentPlayerIndex + 1) + " " + players[currentPlayerIndex].getName() + " roll " + roolnumber);
+            JOptionPane.showMessageDialog(null, "Now is in " + players[currentPlayerIndex].getPosition());
+
+            if (players[currentPlayerIndex].getPosition() >= 100) {
+                JOptionPane.showMessageDialog(null, "Player " + (currentPlayerIndex + 1) + " " + players[currentPlayerIndex].getName() + " wins!");
+                System.exit(0);
+            } 
+
+            gameController.setcurrentPlayerIndex((currentPlayerIndex + 1)%players.length);
+            currentPlayerIndex = gameController.getcurrentPlayerIndex();
+        }
     }
 }
+
+
+class ButtonStyler {
+
+    public static void styleButton(JButton button, String fontName, int fontStyle, int fornSize, Color fontColor, Color bgColor) {
+        
+        // setfont
+        button.setFont(new Font(fontName, fontStyle, fornSize));
+
+        // set font color
+        button.setForeground(fontColor);
+
+        // set background color
+        button.setBackground(bgColor);
+
+        // Optional: if button shows frame
+        button.setBorderPainted(false);
+
+        // Optional: set opaque for show bgColor
+        button.setOpaque(true);
+    }
+
+}
+
