@@ -37,6 +37,7 @@ class TablePanel extends JPanel {
 
 class PlayerNamePanel extends JPanel {
     private GameController gameController;
+    private JLabel[] scoreLabels;
 
     public PlayerNamePanel(GameController gameController) {
         this.gameController = gameController;
@@ -45,6 +46,8 @@ class PlayerNamePanel extends JPanel {
         setLayout(new GridLayout(4, 1)); // 4x1 table
         setOpaque(false); // Transparent background
         setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18)); // Margin
+
+        scoreLabels = new JLabel[4];
 
         for (int i = 0; i < 4; i++) {
             JPanel nameList = new JPanel();
@@ -55,22 +58,40 @@ class PlayerNamePanel extends JPanel {
             JLabel text = new JLabel("Player " + i);
             JLabel name = new JLabel(players[i].getName());
             JLabel score = new JLabel(String.valueOf(players[i].getPosition()));
+
+            scoreLabels[i] = score; // save score for update
+
             text.setFont(new Font("Arial", Font.BOLD, 18));
             name.setFont(new Font("Arial", Font.BOLD, 18));
+            score.setFont(new Font("Arial", Font.BOLD, 18));
 
             text.setHorizontalAlignment(JLabel.CENTER);
             name.setHorizontalAlignment(JLabel.CENTER);
+            score.setHorizontalAlignment(JLabel.CENTER);
 
             nameList.add(text);
             nameList.add(name);
+            nameList.add(score);
+
             add(nameList);
         }
+    }
+
+    // update score when rolldice
+    public void updateScore() {
+        PlayerSetting[] players = gameController.getplayers();
+        for (int i = 0; i < 4; i++) {
+            scoreLabels[i].setText(String.valueOf(players[i].getPosition()));
+        }
+        revalidate();
+        repaint();
     }
 }
 
 class RightItemPanel extends JPanel {
     private final int cellSize;
     private GameController gameController;
+    public JLabel imageLabel;
 
     public RightItemPanel(GameController gameController) {
         this.gameController = gameController;
@@ -89,7 +110,7 @@ class RightItemPanel extends JPanel {
         // Dice image
         ImageIcon imageIcon = new ImageIcon(getClass().getResource("image/one.png")); 
         Image scaledImage = imageIcon.getImage().getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH);
-        JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+        imageLabel = new JLabel(new ImageIcon(scaledImage));
 
         // trun text
         JLabel turntext = new JLabel("NOW IS:\n");
@@ -125,7 +146,35 @@ class RightItemPanel extends JPanel {
         add(rollButton, gbc);
     }
 
-
+    public void updateDiceImage(int Dicenum) {
+        String  imagePath = "image/one.png"; 
+        switch (Dicenum) {
+            case 1:
+                imagePath = "image/one.png"; 
+                break;
+            case 2:
+                imagePath = "image/two.png"; 
+                break;
+            case 3:
+                imagePath = "image/three.png";
+                break;
+            case 4:
+                imagePath = "image/fore.png";
+                break;
+            case 5:
+                imagePath = "image/five.png";
+                break;
+            case 6:
+                imagePath = "image/six.png";
+                break;
+            default:
+                break;
+        }
+        
+        ImageIcon newImageIcon = new ImageIcon(getClass().getResource(imagePath));
+        Image scaledImage = newImageIcon.getImage().getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH);
+        imageLabel.setIcon(new ImageIcon(scaledImage));
+    }
 
     private void rollDice() {
 
@@ -135,11 +184,15 @@ class RightItemPanel extends JPanel {
         // make sure score is not >= 100 
         if (players[currentPlayerIndex].getPosition() < 100) {
             int rollnumber = (int)(Math.random() * 6) + 1;       // random num
+            updateDiceImage(rollnumber);
             players[currentPlayerIndex].setPosition(rollnumber);
             players[currentPlayerIndex].check();
 
             JOptionPane.showMessageDialog(null, "Player " + (currentPlayerIndex + 1) + " " + players[currentPlayerIndex].getName() + " roll " + rollnumber);
             JOptionPane.showMessageDialog(null, "Now is in " + players[currentPlayerIndex].getPosition());
+
+            // update score
+            gameController.playerNamePanel.updateScore();
 
             if (players[currentPlayerIndex].getPosition() >= 100) {
                 JOptionPane.showMessageDialog(null, "Player " + (currentPlayerIndex + 1) + " " + players[currentPlayerIndex].getName() + " wins!");

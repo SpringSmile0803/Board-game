@@ -10,7 +10,7 @@ public class PlayerSetting {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public int getPosition() {

@@ -4,6 +4,8 @@ import java.awt.*;
 public class GameController {
     public int currentPlayerIndex = 0;
     public PlayerSetting[] players;
+    public PlayerNamePanel playerNamePanel;
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new GameController().createAndShowGUI());
     }
@@ -15,7 +17,13 @@ public class GameController {
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Close on exit
         jframe.setUndecorated(true);                // no frame decorations
         
-        PlayerNamePanel playerNamePanel = new PlayerNamePanel(this);
+        String[] PlayerNames = GameInteraction.getName();
+        players = new PlayerSetting[4];
+        for (int i = 0; i < 4; i++) {
+            players[i] = new PlayerSetting(PlayerNames[i]);
+        }
+
+        playerNamePanel = new PlayerNamePanel(this);
         RightItemPanel rightItemPanel = new RightItemPanel(this);
 
         jframe.add(new TablePanel(), BorderLayout.WEST);
@@ -26,18 +34,6 @@ public class GameController {
         jframe.setExtendedState(JFrame.MAXIMIZED_BOTH);         // Fullscreen
         jframe.setVisible(true);
 
-        new Thread(this::startGame).start();
-    }
-
-    private void startGame() {
-        
-        String[] PlayerNames = GameInteraction.getName();
-
-        players = new PlayerSetting[4];
-
-        for (int i = 0; i < 4; i++) {
-            players[i] = new PlayerSetting(PlayerNames[i]);
-        } 
     }
 
 
