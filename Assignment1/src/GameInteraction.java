@@ -2,14 +2,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class GameInteraction {
-    public static void main(String[] args) {
-        String[] Players = getName();
-        
-        for (String name: Players) {
-            System.out.println(name);
-        }
-
-    }
 
     public static String[] getName() {
         JFrame jFrame = new JFrame();

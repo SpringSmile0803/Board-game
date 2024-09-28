@@ -15,10 +15,11 @@ public class GameController {
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Close on exit
         jframe.setUndecorated(true);                // no frame decorations
         
+        PlayerNamePanel playerNamePanel = new PlayerNamePanel(this);
         RightItemPanel rightItemPanel = new RightItemPanel(this);
 
         jframe.add(new TablePanel(), BorderLayout.WEST);
-        jframe.add(new PlayerNamePanel(), BorderLayout.CENTER);
+        jframe.add(playerNamePanel, BorderLayout.CENTER);
         jframe.add(rightItemPanel, BorderLayout.EAST);
         
         jframe.pack();

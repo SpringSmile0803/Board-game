@@ -36,19 +36,25 @@ class TablePanel extends JPanel {
 }
 
 class PlayerNamePanel extends JPanel {
-    public PlayerNamePanel() {
+    private GameController gameController;
+
+    public PlayerNamePanel(GameController gameController) {
+        this.gameController = gameController;
+        PlayerSetting[] players = gameController.getplayers();
+
         setLayout(new GridLayout(4, 1)); // 4x1 table
         setOpaque(false); // Transparent background
         setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18)); // Margin
 
         for (int i = 0; i < 4; i++) {
             JPanel nameList = new JPanel();
-            nameList.setLayout(new GridLayout(2, 1));
+            nameList.setLayout(new GridLayout(3, 1));
             nameList.setOpaque(false);
             nameList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
             JLabel text = new JLabel("Player " + i);
-            JLabel name = new JLabel("t" + i);
+            JLabel name = new JLabel(players[i].getName());
+            JLabel score = new JLabel(String.valueOf(players[i].getPosition()));
             text.setFont(new Font("Arial", Font.BOLD, 18));
             name.setFont(new Font("Arial", Font.BOLD, 18));
 
@@ -122,14 +128,17 @@ class RightItemPanel extends JPanel {
 
 
     private void rollDice() {
+
         int currentPlayerIndex = gameController.getcurrentPlayerIndex();
         PlayerSetting[] players = gameController.getplayers();
+        
+        // make sure score is not >= 100 
         if (players[currentPlayerIndex].getPosition() < 100) {
-            int roolnumber = (int)(Math.random() * 6) + 1;
-            players[currentPlayerIndex].setPosition(roolnumber);
+            int rollnumber = (int)(Math.random() * 6) + 1;       // random num
+            players[currentPlayerIndex].setPosition(rollnumber);
             players[currentPlayerIndex].check();
 
-            JOptionPane.showMessageDialog(null, "Player " + (currentPlayerIndex + 1) + " " + players[currentPlayerIndex].getName() + " roll " + roolnumber);
+            JOptionPane.showMessageDialog(null, "Player " + (currentPlayerIndex + 1) + " " + players[currentPlayerIndex].getName() + " roll " + rollnumber);
             JOptionPane.showMessageDialog(null, "Now is in " + players[currentPlayerIndex].getPosition());
 
             if (players[currentPlayerIndex].getPosition() >= 100) {
@@ -143,7 +152,7 @@ class RightItemPanel extends JPanel {
     }
 }
 
-
+// button style
 class ButtonStyler {
 
     public static void styleButton(JButton button, String fontName, int fontStyle, int fornSize, Color fontColor, Color bgColor) {
