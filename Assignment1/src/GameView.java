@@ -54,9 +54,24 @@ class PlayerNamePanel extends JPanel {
         for (int i = 0; i < 4; i++) {
             JPanel nameList = new JPanel();
             nameList.setLayout(new GridLayout(3, 1));
-            nameList.setOpaque(false);
+            nameList.setOpaque(true);
+            switch (i) {
+                case 1:
+                    nameList.setBackground(new Color(184, 157, 176));
+                    break;
+                case 2:
+                    nameList.setBackground(new Color(156, 175, 207));
+                    break;
+                case 3:
+                    nameList.setBackground(new Color(60, 99, 154));
+                    break;
+                case 4:
+                    nameList.setBackground(new Color(112, 97, 139));
+                    break;
+                default:
+                    break;
+            }
             nameList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
 
             JLabel text = new JLabel("Player " + i);
             JLabel name = new JLabel(players[i].getName());
@@ -64,9 +79,9 @@ class PlayerNamePanel extends JPanel {
 
             scoreLabels[i] = score; // save score for update
 
-            text.setFont(new Font("Arial", Font.BOLD, 18));
-            name.setFont(new Font("Arial", Font.BOLD, 18));
-            score.setFont(new Font("Arial", Font.BOLD, 18));
+            text.setFont(new Font("Arial", Font.BOLD, 24));
+            name.setFont(new Font("Arial", Font.BOLD, 24));
+            score.setFont(new Font("Arial", Font.BOLD, 24));
 
             text.setHorizontalAlignment(JLabel.CENTER);
             name.setHorizontalAlignment(JLabel.CENTER);
