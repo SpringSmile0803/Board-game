@@ -2,23 +2,25 @@ import javax.swing.*;
 import java.awt.*;
 
 class TablePanel extends JPanel {
+    public JLabel[][] TableLabels;
+
     public TablePanel() {
         int margin = 18;
         setLayout(new GridLayout(10, 10)); // 10x10 table
         setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
         setOpaque(false); // Transparent background
 
-        JLabel[][] labels = new JLabel[10][10];
+        TableLabels = new JLabel[10][10];
         int counter = 1;
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                labels[row][col] = new JLabel(String.valueOf(counter), SwingConstants.CENTER);
-                labels[row][col].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                labels[row][col].setFont(new Font("Arial", Font.BOLD, 24));
-                labels[row][col].setBackground(new Color(143, 143, 143));
-                labels[row][col].setOpaque(true);
-                add(labels[row][col]);
+                TableLabels[row][col] = new JLabel(String.valueOf(counter), SwingConstants.CENTER);
+                TableLabels[row][col].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                TableLabels[row][col].setFont(new Font("Arial", Font.BOLD, 24));
+                TableLabels[row][col].setBackground(new Color(143, 143, 143));
+                TableLabels[row][col].setOpaque(true);
+                add(TableLabels[row][col]);
                 counter++;
             }
         }
@@ -26,7 +28,7 @@ class TablePanel extends JPanel {
         // Set cell sizes to ensure they are square
         int cellSize = (Math.min(Toolkit.getDefaultToolkit().getScreenSize().width, 
                                   Toolkit.getDefaultToolkit().getScreenSize().height) - (margin * 2)) / 10;
-        for (JLabel[] row : labels) {
+        for (JLabel[] row : TableLabels) {
             for (JLabel label : row) {
                 label.setPreferredSize(new Dimension(cellSize, cellSize));
             }
@@ -54,6 +56,7 @@ class PlayerNamePanel extends JPanel {
             nameList.setLayout(new GridLayout(3, 1));
             nameList.setOpaque(false);
             nameList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
 
             JLabel text = new JLabel("Player " + i);
             JLabel name = new JLabel(players[i].getName());
