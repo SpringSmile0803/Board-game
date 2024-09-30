@@ -5,6 +5,7 @@ public class GameController {
     public int currentPlayerIndex = 0;
     public PlayerSetting[] players;
     public PlayerNamePanel playerNamePanel;
+    public RightItemPanel rightItemPanel;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new GameController().createAndShowGUI());
@@ -24,7 +25,7 @@ public class GameController {
         }
 
         playerNamePanel = new PlayerNamePanel(this);
-        RightItemPanel rightItemPanel = new RightItemPanel(this);
+        rightItemPanel = new RightItemPanel(this);
 
         jframe.add(new TablePanel(), BorderLayout.WEST);
         jframe.add(playerNamePanel, BorderLayout.CENTER);
