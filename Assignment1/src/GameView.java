@@ -1,6 +1,27 @@
 import javax.swing.*;
 import java.awt.*;
 
+class Four_Color {
+    private Color[] colors;
+    
+    public Four_Color() {
+        colors = new Color[4];
+        colors[0] = new Color(184, 157, 176);
+        colors[1] = new Color(156, 175, 207);
+        colors[2] = new Color(60, 99, 154);
+        colors[3] = new Color(112, 97, 139);
+        
+    }
+
+    public Color getColor(int nums) {
+        if (nums >= 0 && nums < 4) {
+            return colors[nums];
+        }else {
+            return Color.GRAY;
+        }
+    }
+}
+
 class TablePanel extends JPanel {
     public JLabel[][] TableLabels;
 
@@ -9,7 +30,6 @@ class TablePanel extends JPanel {
         setLayout(new GridLayout(10, 10)); // 10x10 table
         setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
         setOpaque(false); // Transparent background
-
         TableLabels = new JLabel[10][10];
         int counter = 1;
 
@@ -40,9 +60,11 @@ class TablePanel extends JPanel {
 class PlayerNamePanel extends JPanel {
     private GameController gameController;
     private JLabel[] scoreLabels;
+    private Four_Color four_Color;
 
     public PlayerNamePanel(GameController gameController) {
         this.gameController = gameController;
+        this.four_Color = new Four_Color();
         PlayerSetting[] players = gameController.getplayers();
 
         setLayout(new GridLayout(4, 1)); // 4x1 table
@@ -55,22 +77,7 @@ class PlayerNamePanel extends JPanel {
             JPanel nameList = new JPanel();
             nameList.setLayout(new GridLayout(3, 1));
             nameList.setOpaque(true);
-            switch (i) {
-                case 1:
-                    nameList.setBackground(new Color(184, 157, 176));
-                    break;
-                case 2:
-                    nameList.setBackground(new Color(156, 175, 207));
-                    break;
-                case 3:
-                    nameList.setBackground(new Color(60, 99, 154));
-                    break;
-                case 4:
-                    nameList.setBackground(new Color(112, 97, 139));
-                    break;
-                default:
-                    break;
-            }
+            nameList.setBackground(four_Color.getColor(i)); 
             nameList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
             JLabel text = new JLabel("Player " + i);
