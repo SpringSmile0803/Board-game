@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import javax.swing.*;
 
 public class PlayerSetting {
     private String name;
@@ -39,7 +40,14 @@ public class PlayerSetting {
         checklist_Map.put(97, 82);
 
         if (checklist_Map.containsKey(position)) {
+            int oldPosisiont = position;
             position = checklist_Map.get(position);
+            int newPosision = position;
+            if (oldPosisiont < newPosision) {
+                JOptionPane.showMessageDialog(null, name + " from " + oldPosisiont + " increase to " + newPosision);
+            } else {
+                JOptionPane.showMessageDialog(null, name + " from " + oldPosisiont + " decrease to " + newPosision);
+            }
         }
     }
 }

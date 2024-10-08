@@ -5,42 +5,91 @@ class Four_Color {
     private Color[] colors;
     
     public Four_Color() {
-        colors = new Color[4];
+        colors = new Color[5];
         colors[0] = new Color(184, 157, 176);
         colors[1] = new Color(156, 175, 207);
         colors[2] = new Color(60, 99, 154);
         colors[3] = new Color(112, 97, 139);
-        
+        colors[4] = new Color(143, 143, 143);
     }
 
     public Color getColor(int nums) {
         if (nums >= 0 && nums < 4) {
             return colors[nums];
         }else {
-            return Color.GRAY;
+            return colors[4];
         }
     }
 }
 
-class TablePanel extends JPanel {
-    public JLabel[][] TableLabels;
+class CellPanel extends JPanel {
+    private Color[] playerColors;
+    private JLabel numberLabel;
 
+    public CellPanel(Color[] playerColors, String number){
+        this.playerColors = playerColors;
+        setLayout(new BorderLayout());
+        setBackground(playerColors[4]);
+
+        numberLabel = new JLabel(number, SwingConstants.CENTER);
+        numberLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        add(numberLabel, BorderLayout.CENTER);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        // setAreaColor
+        int width = getWidth();
+        int height = getHeight();
+
+        // Every Color are a quarter of the grid
+        g.setColor(playerColors[0]); 
+        g.fillRect(0, 0, width / 2, height / 2);
+
+        g.setColor(playerColors[1]); 
+        g.fillRect(width / 2, 0, width / 2, height / 2);
+
+        g.setColor(playerColors[2]); 
+        g.fillRect(0, height / 2, width / 2, height / 2);
+
+        g.setColor(playerColors[3]); 
+        g.fillRect(width / 2, height / 2, width / 2, height / 2);
+    }
+
+    // update Colors
+    public void updateColor(int colorIndex, Color newColor) {
+        playerColors[colorIndex] = newColor;
+        repaint();
+    }
+}
+
+class TablePanel extends JPanel {
+    public CellPanel[][] tableCells;
+    private Four_Color four_Color;
+    
     public TablePanel() {
+        this.four_Color = new Four_Color();
         int margin = 18;
         setLayout(new GridLayout(10, 10)); // 10x10 table
         setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
         setOpaque(false); // Transparent background
-        TableLabels = new JLabel[10][10];
+        tableCells = new CellPanel[10][10];
         int counter = 1;
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                TableLabels[row][col] = new JLabel(String.valueOf(counter), SwingConstants.CENTER);
-                TableLabels[row][col].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                TableLabels[row][col].setFont(new Font("Arial", Font.BOLD, 24));
-                TableLabels[row][col].setBackground(new Color(143, 143, 143));
-                TableLabels[row][col].setOpaque(true);
-                add(TableLabels[row][col]);
+                Color[] initialColors = new Color[] {
+                    new Color(0, 0, 0, 0), 
+                    new Color(0, 0, 0, 0), 
+                    new Color(0, 0, 0, 0), 
+                    new Color(0, 0, 0, 0),
+                    four_Color.getColor(4)
+                };
+                tableCells[row][col] = new CellPanel(initialColors, String.valueOf(counter));
+                tableCells[row][col].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                add(tableCells[row][col]);
                 counter++;
             }
         }
@@ -48,12 +97,22 @@ class TablePanel extends JPanel {
         // Set cell sizes to ensure they are square
         int cellSize = (Math.min(Toolkit.getDefaultToolkit().getScreenSize().width, 
                                   Toolkit.getDefaultToolkit().getScreenSize().height) - (margin * 2)) / 10;
-        for (JLabel[] row : TableLabels) {
-            for (JLabel label : row) {
-                label.setPreferredSize(new Dimension(cellSize, cellSize));
+        for (CellPanel[] row : tableCells) {
+            for (CellPanel cell : row) {
+                cell.setPreferredSize(new Dimension(cellSize, cellSize));
             }
         }
         revalidate();
+    }
+
+    public void updateCellColors(int row, int col, int colorIndex, Color newColor) {
+        if (row >= 0 && row < tableCells.length && col >= 0 && col < tableCells.length) {
+            CellPanel cell = tableCells[row][col];
+            cell.updateColor(colorIndex, newColor);
+        } else {
+            System.out.println(row);
+            System.out.println(col);
+        }
     }
 }
 
@@ -80,7 +139,7 @@ class PlayerNamePanel extends JPanel {
             nameList.setBackground(four_Color.getColor(i)); 
             nameList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-            JLabel text = new JLabel("Player " + i);
+            JLabel text = new JLabel("Player " + (i + 1));
             JLabel name = new JLabel(players[i].getName());
             JLabel score = new JLabel(String.valueOf(players[i].getPosition()));
 
@@ -117,9 +176,12 @@ class RightItemPanel extends JPanel {
     private final int cellSize;
     private GameController gameController;
     public JLabel imageLabel;
+    private TablePanel tablePanel;
+    private Four_Color four_Color;
 
-    public RightItemPanel(GameController gameController) {
+    public RightItemPanel(GameController gameController, TablePanel tablePanel) {
         this.gameController = gameController;
+        this.tablePanel = tablePanel;
         cellSize = 258;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -172,7 +234,7 @@ class RightItemPanel extends JPanel {
     }
 
     public void updateDiceImage(int Dicenum) {
-        String  imagePath = "image/one.png"; 
+        String imagePath = "image/one.png"; 
         switch (Dicenum) {
             case 1:
                 imagePath = "image/one.png"; 
@@ -184,7 +246,7 @@ class RightItemPanel extends JPanel {
                 imagePath = "image/three.png";
                 break;
             case 4:
-                imagePath = "image/fore.png";
+                imagePath = "image/four.png";
                 break;
             case 5:
                 imagePath = "image/five.png";
@@ -205,15 +267,30 @@ class RightItemPanel extends JPanel {
 
         int currentPlayerIndex = gameController.getcurrentPlayerIndex();
         PlayerSetting[] players = gameController.getplayers();
-        
+        this.four_Color = new Four_Color();
+
         // make sure score is not >= 100 
-        if (players[currentPlayerIndex].getPosition() < 100) {
+        if (players[currentPlayerIndex].getPosition() < 100 - 1) {
             int rollnumber = (int)(Math.random() * 6) + 1;       // random num
             updateDiceImage(rollnumber);
+
+            
+            JOptionPane.showMessageDialog(null, "Player " + (currentPlayerIndex + 1) + " " + players[currentPlayerIndex].getName() + " roll " + rollnumber);
+            int CurrenPosition = players[currentPlayerIndex].getPosition();
             players[currentPlayerIndex].setPosition(rollnumber);
             players[currentPlayerIndex].check();
 
-            JOptionPane.showMessageDialog(null, "Player " + (currentPlayerIndex + 1) + " " + players[currentPlayerIndex].getName() + " roll " + rollnumber);
+
+            int oldrow = (CurrenPosition - 1) / 10;
+            int oldcol = (CurrenPosition - 1) % 10;
+            tablePanel.updateCellColors(oldrow, oldcol, currentPlayerIndex, new Color(143, 143, 143));
+            
+            CurrenPosition = players[currentPlayerIndex].getPosition();
+            int newrow = (CurrenPosition - 1) / 10;
+            int newcol = (CurrenPosition - 1) % 10;
+            tablePanel.updateCellColors(newrow, newcol, currentPlayerIndex, four_Color.getColor(currentPlayerIndex));
+
+
             JOptionPane.showMessageDialog(null, "Now is in " + players[currentPlayerIndex].getPosition());
 
             // update score

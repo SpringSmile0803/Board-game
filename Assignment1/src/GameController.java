@@ -25,9 +25,10 @@ public class GameController {
         }
 
         playerNamePanel = new PlayerNamePanel(this);
-        rightItemPanel = new RightItemPanel(this);
+        TablePanel tablePanel = new TablePanel();
+        rightItemPanel = new RightItemPanel(this, tablePanel);
 
-        jframe.add(new TablePanel(), BorderLayout.WEST);
+        jframe.add(tablePanel, BorderLayout.WEST);
         jframe.add(playerNamePanel, BorderLayout.CENTER);
         jframe.add(rightItemPanel, BorderLayout.EAST);
         
