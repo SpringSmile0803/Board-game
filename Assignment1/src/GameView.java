@@ -6,10 +6,10 @@ class Four_Color {
     
     public Four_Color() {
         colors = new Color[5];
-        colors[0] = new Color(184, 157, 176);
-        colors[1] = new Color(156, 175, 207);
-        colors[2] = new Color(60, 99, 154);
-        colors[3] = new Color(112, 97, 139);
+        colors[0] = new Color(198, 224, 245);
+        colors[1] = new Color(216, 237, 227);
+        colors[2] = new Color(247, 245, 255);
+        colors[3] = new Color(239, 171, 196);
         colors[4] = new Color(143, 143, 143);
     }
 
@@ -274,7 +274,7 @@ class RightItemPanel extends JPanel {
             int rollnumber = (int)(Math.random() * 6) + 1;       // random num
             updateDiceImage(rollnumber);
 
-            
+
             JOptionPane.showMessageDialog(null, "Player " + (currentPlayerIndex + 1) + " " + players[currentPlayerIndex].getName() + " roll " + rollnumber);
             int CurrenPosition = players[currentPlayerIndex].getPosition();
             players[currentPlayerIndex].setPosition(rollnumber);
