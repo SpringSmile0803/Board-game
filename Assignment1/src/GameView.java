@@ -7,9 +7,9 @@ class Four_Color {
     public Four_Color() {
         colors = new Color[5];
         colors[0] = new Color(198, 224, 245);
-        colors[1] = new Color(216, 237, 227);
-        colors[2] = new Color(247, 245, 255);
-        colors[3] = new Color(239, 171, 196);
+        colors[1] = new Color(216, 200, 227);
+        colors[2] = new Color(255 ,105 ,180);
+        colors[3] = new Color(180, 238, 180);
         colors[4] = new Color(143, 143, 143);
     }
 
@@ -178,10 +178,12 @@ class RightItemPanel extends JPanel {
     public JLabel imageLabel;
     private TablePanel tablePanel;
     private Four_Color four_Color;
+    private JLabel turntext;
 
     public RightItemPanel(GameController gameController, TablePanel tablePanel) {
         this.gameController = gameController;
         this.tablePanel = tablePanel;
+        PlayerSetting[] players = gameController.getplayers();
         cellSize = 258;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -200,7 +202,8 @@ class RightItemPanel extends JPanel {
         imageLabel = new JLabel(new ImageIcon(scaledImage));
 
         // trun text
-        JLabel turntext = new JLabel("NOW IS:\n");
+        String player = players[0].getName();
+        turntext = new JLabel("NOW IS:\n" + player);
         turntext.setFont(new Font("Arial", Font.BOLD, 28));
 
         // Roll button
@@ -263,6 +266,12 @@ class RightItemPanel extends JPanel {
         imageLabel.setIcon(new ImageIcon(scaledImage));
     }
 
+    public void updatePlayer(int run) {
+        PlayerSetting[] players = gameController.getplayers();
+        String player = players[run].getName();
+        turntext.setText("NOW IS: \n" + player);
+    }
+
     private void rollDice() {
 
         int currentPlayerIndex = gameController.getcurrentPlayerIndex();
@@ -303,6 +312,8 @@ class RightItemPanel extends JPanel {
 
             gameController.setcurrentPlayerIndex((currentPlayerIndex + 1)%players.length);
             currentPlayerIndex = gameController.getcurrentPlayerIndex();
+
+            updatePlayer(currentPlayerIndex);
         }
     }
 }
