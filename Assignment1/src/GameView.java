@@ -1,16 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
 
+// four color for player and table BG color
 class Four_Color {
     private Color[] colors;
     
     public Four_Color() {
         colors = new Color[5];
-        colors[0] = new Color(198, 224, 245);
-        colors[1] = new Color(216, 200, 227);
-        colors[2] = new Color(255 ,105 ,180);
-        colors[3] = new Color(180, 238, 180);
-        colors[4] = new Color(143, 143, 143);
+        colors[0] = new Color(198, 224, 245); // player1 color
+        colors[1] = new Color(216, 200, 227); // player2 color
+        colors[2] = new Color(255 ,105 ,180); // player3 color
+        colors[3] = new Color(180, 238, 180); // player4 color
+        colors[4] = new Color(143, 143, 143); // BG color
     }
 
     public Color getColor(int nums) {
@@ -22,10 +23,12 @@ class Four_Color {
     }
 }
 
+// JPanel color for each player in table
 class CellPanel extends JPanel {
     private Color[] playerColors;
     private JLabel numberLabel;
 
+    // create the table and make color
     public CellPanel(Color[] playerColors, String number){
         this.playerColors = playerColors;
         setLayout(new BorderLayout());
@@ -76,7 +79,7 @@ class TablePanel extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
         setOpaque(false); // Transparent background
         tableCells = new CellPanel[10][10];
-        int counter = 1;
+        int counter = 1; // table number
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
@@ -105,6 +108,7 @@ class TablePanel extends JPanel {
         revalidate();
     }
 
+    // update color when RollDice
     public void updateCellColors(int row, int col, int colorIndex, Color newColor) {
         if (row >= 0 && row < tableCells.length && col >= 0 && col < tableCells.length) {
             CellPanel cell = tableCells[row][col];
@@ -116,6 +120,7 @@ class TablePanel extends JPanel {
     }
 }
 
+// save score and show each player's color
 class PlayerNamePanel extends JPanel {
     private GameController gameController;
     private JLabel[] scoreLabels;
@@ -172,6 +177,7 @@ class PlayerNamePanel extends JPanel {
     }
 }
 
+// exit botton, Dice image, turn frame, and roll botton
 class RightItemPanel extends JPanel {
     private final int cellSize;
     private GameController gameController;
@@ -280,25 +286,24 @@ class RightItemPanel extends JPanel {
 
         // make sure score is not >= 100 
         if (players[currentPlayerIndex].getPosition() < 100 - 1) {
-            int rollnumber = (int)(Math.random() * 6) + 1;       // random num
+            int rollnumber = (int)(Math.random() * 6) + 1;  // random num
             updateDiceImage(rollnumber);
-
 
             JOptionPane.showMessageDialog(null, "Player " + (currentPlayerIndex + 1) + " " + players[currentPlayerIndex].getName() + " roll " + rollnumber);
             int CurrenPosition = players[currentPlayerIndex].getPosition();
             players[currentPlayerIndex].setPosition(rollnumber);
             players[currentPlayerIndex].check();
 
-
+            // make old position color become BG color
             int oldrow = (CurrenPosition - 1) / 10;
             int oldcol = (CurrenPosition - 1) % 10;
             tablePanel.updateCellColors(oldrow, oldcol, currentPlayerIndex, new Color(143, 143, 143));
             
+            // make new position color become new color
             CurrenPosition = players[currentPlayerIndex].getPosition();
             int newrow = (CurrenPosition - 1) / 10;
             int newcol = (CurrenPosition - 1) % 10;
             tablePanel.updateCellColors(newrow, newcol, currentPlayerIndex, four_Color.getColor(currentPlayerIndex));
-
 
             JOptionPane.showMessageDialog(null, "Now is in " + players[currentPlayerIndex].getPosition());
 
@@ -310,9 +315,11 @@ class RightItemPanel extends JPanel {
                 System.exit(0);
             } 
 
+            // next player
             gameController.setcurrentPlayerIndex((currentPlayerIndex + 1)%players.length);
             currentPlayerIndex = gameController.getcurrentPlayerIndex();
 
+            // update the item of turntext
             updatePlayer(currentPlayerIndex);
         }
     }
