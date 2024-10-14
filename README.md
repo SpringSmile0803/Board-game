@@ -1,3 +1,5 @@
+Run GameController.java
+
 29/9/24
 我把roll事件改骰子點數圖片跟分數改好了
 1.score面板還沒加顏色跟文字調整
